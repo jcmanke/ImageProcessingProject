@@ -2,7 +2,7 @@
 
 int main( int argc, char *argv[] )
 {
-    QObject obj;
+    ImageTransformations obj;
     ImageApp app( argc, argv );
     app.AddActions( &obj );
     return app.Start();

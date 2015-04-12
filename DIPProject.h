@@ -2,7 +2,7 @@
 #pragma once
 #include <qtimagelib.h>
 
-class ImageTransformations: public QObject
+class ImageTransformations : public QObject
 {
     Q_OBJECT
 
