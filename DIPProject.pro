@@ -1,4 +1,7 @@
-SOURCES += DIPProject.cpp
+SOURCES += \
+    AffineTransforms.cpp \
+    Main.cpp \
+    RubberSheet.cpp
 CONFIG += qtimagelib
 
 HEADERS += \
