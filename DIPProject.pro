@@ -1,8 +1,10 @@
 SOURCES += \
     AffineTransforms.cpp \
     Main.cpp \
-    RubberSheet.cpp
+    RubberSheet.cpp \
+    point.cpp
 CONFIG += qtimagelib
 
 HEADERS += \
-    DIPProject.h
+    DIPProject.h \
+    point.h
