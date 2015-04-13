@@ -22,6 +22,11 @@ bool getScaledImage(Image &originalImage, Image &newImage)
     }
 }
 
+double degreesToRadians(int angle)
+{
+    return angle * M_PI / 180;
+}
+
 bool ImageTransformations::Menu_Transformation_RotationByBilinearIntensity(Image &image)
 {
     return true;
@@ -29,7 +34,57 @@ bool ImageTransformations::Menu_Transformation_RotationByBilinearIntensity(Image
 
 bool ImageTransformations::Menu_Transformation_RotationByNearestNeighbor(Image &image)
 {
-    return true;
+    //http://www.tinaja.com/glib/invegraf.pdf
+
+    int angle = 45;
+
+    Dialog input = Dialog("Rotation").Add(angle, "Rotation Angle", 0, 360);
+
+    if (input.Show())
+    {
+        uint length = sqrt(image.Height() * image.Height() + image.Width() * image.Width());
+
+        double radian = degreesToRadians(angle);
+        double leadLag = atan(image.Width() / image.Height());
+
+        uint newWidth = max(abs(cos(radian + leadLag)), abs(cos(radian - leadLag))) * length;
+        uint newHeight = max(abs(sin(radian + leadLag)), abs(sin(radian + leadLag))) * length;
+        Image newImage = Image(length, length);
+
+        double sine = sin(radian);
+        double cosine = cos(radian);
+
+        uint centerY = image.Height() / 2;
+        uint centerX = image.Width() / 2;
+
+        for (uint y = 0; y < newImage.Height(); y++)
+        {
+            int diffY = y - centerY;
+
+            for(uint x = 0; x < newImage.Width(); x++)
+            {
+                int diffX = x - centerX;
+
+                int origX = -diffX * cosine - diffY * sine;
+                int origY = diffY * cosine - diffX * sine;
+
+                //int origX = -x * cosine - y * sine + centerX;
+                //int origY = y * cosine - x * sine + centerY;
+
+                if (origY >= 0 && origY < image.Height() && origX >= 0 && origX < image.Width())
+                {
+                    newImage[y][x] = image[origY][origX];
+                }
+            }
+        }
+
+        image = newImage;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 bool ImageTransformations::Menu_Transformation_ScaleByBilinearIntensity(Image &image)
