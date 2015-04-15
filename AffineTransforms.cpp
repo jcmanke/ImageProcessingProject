@@ -42,15 +42,9 @@ bool ImageTransformations::Menu_Transformation_RotationByNearestNeighbor(Image &
 
     if (input.Show())
     {
-        uint length = sqrt(image.Height() * image.Height() + image.Width() * image.Width());
+        Image newImage = Image(image.Height(), image.Width());
 
         double radian = degreesToRadians(angle);
-        double leadLag = atan(image.Width() / image.Height());
-
-        uint newWidth = max(abs(cos(radian + leadLag)), abs(cos(radian - leadLag))) * length;
-        uint newHeight = max(abs(sin(radian + leadLag)), abs(sin(radian + leadLag))) * length;
-        Image newImage = Image(length, length);
-
         double sine = sin(radian);
         double cosine = cos(radian);
 
@@ -65,11 +59,8 @@ bool ImageTransformations::Menu_Transformation_RotationByNearestNeighbor(Image &
             {
                 int diffX = x - centerX;
 
-                int origX = -diffX * cosine - diffY * sine;
-                int origY = diffY * cosine - diffX * sine;
-
-                //int origX = -x * cosine - y * sine + centerX;
-                //int origY = y * cosine - x * sine + centerY;
+                int origX = diffX * cosine - diffY * sine + centerX + 0.5;
+                int origY = diffY * cosine + diffX * sine + centerY + 0.5;
 
                 if (origY >= 0 && origY < image.Height() && origX >= 0 && origX < image.Width())
                 {
