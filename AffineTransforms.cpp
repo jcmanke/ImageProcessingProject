@@ -34,20 +34,20 @@ bool ImageTransformations::Menu_Transformation_RotationByBilinearIntensity(Image
 
 bool ImageTransformations::Menu_Transformation_RotationByNearestNeighbor(Image &image)
 {
-    //http://www.tinaja.com/glib/invegraf.pdf
-
+    //get angle from user
     int angle = 45;
 
     Dialog input = Dialog("Rotation").Add(angle, "Rotation Angle", 0, 360);
 
     if (input.Show())
     {
+        //create new image of same size (will result in clipped corners)
         Image newImage = Image(image.Height(), image.Width());
 
+        //calculate constants
         double radian = degreesToRadians(angle);
         double sine = sin(radian);
         double cosine = cos(radian);
-
         uint centerY = image.Height() / 2;
         uint centerX = image.Width() / 2;
 
@@ -59,6 +59,7 @@ bool ImageTransformations::Menu_Transformation_RotationByNearestNeighbor(Image &
             {
                 int diffX = x - centerX;
 
+                //inverse mapping
                 int origX = diffX * cosine - diffY * sine + centerX + 0.5;
                 int origY = diffY * cosine + diffX * sine + centerY + 0.5;
 
@@ -114,6 +115,7 @@ bool ImageTransformations::Menu_Transformation_ScaleByBilinearIntensity(Image &i
 
 bool ImageTransformations::Menu_Transformation_ScaleByNearestNeighbor(Image &image)
 {
+    //get scale factors from user
     double x_scale = 1.0;
     double y_scale = 1.0;
 
@@ -121,15 +123,18 @@ bool ImageTransformations::Menu_Transformation_ScaleByNearestNeighbor(Image &ima
 
     if (input.Show())
     {
+        //create new image of scaled size
         Image newImage = Image(image.Height() * y_scale, image.Width() * x_scale);
 
         for (uint y = 0; y < newImage.Height(); y++)
         {
+            //inverse mapping of Y coordinate
             uint origY = y / y_scale + 0.5;
             origY = min(origY, image.Height() - 1);
 
             for (uint x = 0; x < newImage.Width(); x++)
             {
+                //inverse mapping of X coordinate
                 uint origX = x / x_scale + 0.5;
                 origX = min(origX, image.Width() - 1);
 
