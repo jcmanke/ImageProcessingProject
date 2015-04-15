@@ -6,14 +6,14 @@
 class Point
 {
     private:
-        uint x;
-        uint y;
+        double x;
+        double y;
         uint intensity;
 
     public:
-        Point(uint x, uint y, uint intensity);
-        uint X();
-        uint Y();
+        Point(double x, double y, uint intensity);
+        double X();
+        double Y();
         uint Intensity();
 };
 

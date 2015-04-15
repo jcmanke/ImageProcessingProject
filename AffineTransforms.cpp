@@ -98,15 +98,18 @@ bool ImageTransformations::Menu_Transformation_ScaleByBilinearIntensity(Image &i
     {
         Image newImage = Image(image.Height() * y_scale, image.Width() * x_scale);
 
+        int width = newImage.Width();
+        int origWidth = image.Width();
+
         for (uint y = 1; y < newImage.Height() - 1; y++)
         {
             double origY = y / y_scale;
             origY = min(origY, (double) (image.Height() - 2));
 
-            for (uint x = 1; x < newImage.Width() - 1; x++)
+            for (uint x = 1; x < width - 1; x++)
             {
                 double origX = x / x_scale;
-                origX = min(origX, (double) (image.Width() - 2));
+                origX = min(origX, (double) (origWidth - 2));
 
                 newImage[y][x] = Bilinear(origX, origY, image) + .0000005;
             }
@@ -160,21 +163,18 @@ uint ImageTransformations::Bilinear(double newx, double newy, Image &image)
     uint x = (int) newx;
     uint y = (int) newy;
 
-    int h = image.Height();
-    int w = image.Width();
+    Point point11 = Point(x, y, image[y][x].Intensity());
+    Point point12 = Point(x, y+1, image[y+1][x].Intensity());
+    Point point21 = Point(x+1, y, image[y][x+1].Intensity());
+    Point point22 = Point(x+1, y+1, image[y+1][x+1].Intensity());
 
-    Point point11 = Point(x, y, image[x][y].Intensity());
-    Point point12 = Point(x, y+1, image[x][y+1].Intensity());
-    Point point21 = Point(x+1, y, image[x+1][y].Intensity());
-    Point point22 = Point(x+1, y+1, image[x+1][y+1].Intensity());
-
-    uint intensity = (point12.X() - newx) / (point12.X() - point11.X()) * point11.Intensity() +
-                     (newx - point11.X()) / (point12.X() - point11.X()) * point12.Intensity();
+    uint intensity = (point21.X() - newx) / (point21.X() - point11.X()) * point11.Intensity() +
+                     (newx - point11.X()) / (point21.X() - point11.X()) * point21.Intensity();
 
     Point row1 = Point(newx, y, intensity);
 
-    intensity = (point22.X() - newx) / (point22.X() - point21.X()) * point21.Intensity() +
-                (newx - point21.X()) / (point22.X() - point21.X()) * point22.Intensity();
+    intensity = (point22.X() - newx) / (point22.X() - point12.X()) * point12.Intensity() +
+                (newx - point12.X()) / (point22.X() - point12.X()) * point22.Intensity();
 
     Point row2 = Point(newx, y + 1, intensity);
 

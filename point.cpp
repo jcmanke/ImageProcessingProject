@@ -1,18 +1,18 @@
 #include "point.h"
 
-Point::Point(uint _x, uint _y, uint _intensity)
+Point::Point(double _x, double _y, uint _intensity)
 {
     x = _x;
     y =_y;
     intensity = _intensity;
 }
 
-uint Point::X()
+double Point::X()
 {
     return x;
 }
 
-uint Point::Y()
+double Point::Y()
 {
     return y;
 }
