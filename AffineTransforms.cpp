@@ -29,7 +29,50 @@ double degreesToRadians(int angle)
 
 bool ImageTransformations::Menu_Transformation_RotationByBilinearIntensity(Image &image)
 {
-    return true;
+    //get angle from user
+    int angle = 45;
+
+    Dialog input = Dialog("Rotation").Add(angle, "Rotation Angle", 0, 360);
+
+    if (input.Show())
+    {
+        //create new image of same size (will result in clipped corners)
+        Image newImage = Image(image.Height(), image.Width());
+
+        //calculate constants
+        double radian = degreesToRadians(angle);
+        double sine = sin(radian);
+        double cosine = cos(radian);
+        double centerY = image.Height() / 2.0;
+        double centerX = image.Width() / 2.0;
+
+        for (uint y = 0; y < newImage.Height() - 1; y++)
+        {
+            double diffY = y - centerY;
+
+            for (uint x = 0; x < newImage.Width() - 1; x++)
+            {
+                double diffX = x - centerX;
+
+                //inverse mapping
+                double origX = diffX * cosine - diffY * sine + centerX + 0.5;
+                double origY = diffY * cosine + diffX * sine + centerY + 0.5;
+
+                if (origY >= 0 && origY < image.Height()-1 && origX >= 0 && origX < image.Width()-1)
+                {
+                    Pixel* pix = Bilinear(origX, origY, image);
+                    newImage[y][x] = *pix;
+                }
+            }
+        }
+
+        image = newImage;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 bool ImageTransformations::Menu_Transformation_RotationByNearestNeighbor(Image &image)
