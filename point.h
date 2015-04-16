@@ -8,13 +8,13 @@ class Point
     private:
         double x;
         double y;
-        uint intensity;
+        Pixel pix;
 
     public:
-        Point(double x, double y, uint intensity);
+        Point(double x, double y, Pixel pixel);
         double X();
         double Y();
-        uint Intensity();
+        Pixel Pix();
 };
 
 #endif // POINT_H

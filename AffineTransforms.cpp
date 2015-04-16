@@ -103,7 +103,8 @@ bool ImageTransformations::Menu_Transformation_ScaleByBilinearIntensity(Image &i
                 double origX = x / x_scale;
                 origX = min(origX, (double) (origWidth - 2));
 
-                newImage[y][x] = Bilinear(origX, origY, image) + .0000005;
+                Pixel* pix = Bilinear(origX, origY, image);
+                newImage[y][x].SetRGB(pix->Red(), pix->Green(), pix->Blue());
             }
         }
 
@@ -154,28 +155,55 @@ bool ImageTransformations::Menu_Transformation_ScaleByNearestNeighbor(Image &ima
     }
 }
 
-uint ImageTransformations::Bilinear(double newx, double newy, Image &image)
+Pixel* ImageTransformations::Bilinear(double newx, double newy, Image &image)
 {
     uint x = (int) newx;
     uint y = (int) newy;
 
-    Point point11 = Point(x, y, image[y][x].Intensity());
-    Point point12 = Point(x, y+1, image[y+1][x].Intensity());
-    Point point21 = Point(x+1, y, image[y][x+1].Intensity());
-    Point point22 = Point(x+1, y+1, image[y+1][x+1].Intensity());
+    Point point11 = Point(x, y, image[y][x]);
+    Point point12 = Point(x, y+1, image[y+1][x]);
+    Point point21 = Point(x+1, y, image[y][x+1]);
+    Point point22 = Point(x+1, y+1, image[y+1][x+1]);
 
-    uint intensity = (point21.X() - newx) / (point21.X() - point11.X()) * point11.Intensity() +
-                     (newx - point11.X()) / (point21.X() - point11.X()) * point21.Intensity();
+    double scaleFactor1 = (point21.X() - newx) / (point21.X() - point11.X());
+    double scaleFactor2 = (newx - point11.X()) / (point21.X() - point11.X());
 
-    Point row1 = Point(newx, y, intensity);
+    uint intensity = scaleFactor1 * point11.Pix().Intensity();
+    double inphase = scaleFactor1 * point11.Pix().Inphase();
+    double quad = scaleFactor1 * point11.Pix().Quadrature();
 
-    intensity = (point22.X() - newx) / (point22.X() - point12.X()) * point12.Intensity() +
-                (newx - point12.X()) / (point22.X() - point12.X()) * point22.Intensity();
+    Pixel *pix = new Pixel();
+    pix->SetIntensity(intensity + scaleFactor2 * point21.Pix().Intensity());
+    pix->SetInphase(inphase + scaleFactor2 * point21.Pix().Inphase());
+    pix->SetQuadrature(quad + scaleFactor2 * point21.Pix().Quadrature());
 
-    Point row2 = Point(newx, y + 1, intensity);
+    Point row1 = Point(newx, y, *pix);
 
-    intensity = (row2.Y() - newy) / (row2.Y() - row1.Y()) * row1.Intensity() +
-                (newy - row1.Y()) / (row2.Y() - row1.Y()) * row2.Intensity();
+    scaleFactor1 = (point22.X() - newx) / (point22.X() - point12.X());
+    scaleFactor2 = (newx - point12.X()) / (point22.X() - point12.X());
 
-    return intensity;
+    intensity = scaleFactor1 * point12.Pix().Intensity();
+    inphase = scaleFactor1 * point12.Pix().Inphase();
+    quad = scaleFactor1 * point12.Pix().Quadrature();
+
+    Pixel* pix2 = new Pixel();
+    pix2->SetIntensity(intensity + scaleFactor2 * point22.Pix().Intensity());
+    pix2->SetInphase(inphase + scaleFactor2 * point22.Pix().Inphase());
+    pix2->SetQuadrature(quad + scaleFactor2 * point22.Pix().Quadrature());
+
+    Point row2 = Point(newx, y + 1, *pix2);
+
+    scaleFactor1 = (row2.Y() - newy) / (row2.Y() - row1.Y());
+    scaleFactor2 = (newy - row1.Y()) / (row2.Y() - row1.Y());
+
+    intensity = scaleFactor1 * row1.Pix().Intensity();
+    inphase = scaleFactor1 * row1.Pix().Inphase();
+    quad = scaleFactor1 * row1.Pix().Quadrature();
+
+    Pixel* pix3 = new Pixel();
+    pix3->SetIntensity(intensity + scaleFactor2 * row2.Pix().Intensity());
+    pix3->SetInphase(inphase + scaleFactor2 * row2.Pix().Inphase());
+    pix3->SetQuadrature(quad + scaleFactor2 * row2.Pix().Quadrature());
+
+    return pix3;
 }

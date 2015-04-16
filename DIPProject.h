@@ -7,7 +7,7 @@ class ImageTransformations : public QObject
     Q_OBJECT
 
 private:
-    uint Bilinear(double x, double y, Image &image);
+    Pixel* Bilinear(double x, double y, Image &image);
 
 public slots:
     bool Menu_Transformation_ScaleByNearestNeighbor(Image &image);
