@@ -11,7 +11,7 @@ class Point
         Pixel pix;
 
     public:
-        Point(double x, double y, Pixel pixel);
+        Point(double x, double y, Pixel &pixel);
         double X();
         double Y();
         Pixel Pix();

@@ -1,6 +1,6 @@
 #include "point.h"
 
-Point::Point(double _x, double _y, Pixel pixel)
+Point::Point(double _x, double _y, Pixel &pixel)
 {
     x = _x;
     y = _y;
