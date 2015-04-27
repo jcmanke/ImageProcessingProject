@@ -15,7 +15,7 @@ bool ImageTransformations::Menu_Transformation_GeneralWarp(Image &image)
         // equations!
         // newX = cv + bw +avw + d
         // newY = gv + fw +evw + h
-        // a = c1 - b1 + a -d1
+        // a = c1 - b1 + a1 -d1
         // b = b1 - a1
         // c = d1 - a1
         // d = a1
