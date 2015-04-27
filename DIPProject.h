@@ -1,6 +1,8 @@
 
 #pragma once
 #include <qtimagelib.h>
+#include "tiepoint.h"
+#include "tpdialog.h"
 
 class ImageTransformations : public QObject
 {
