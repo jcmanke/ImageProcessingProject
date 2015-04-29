@@ -3,6 +3,7 @@
 #include <qtimagelib.h>
 #include "tiepoint.h"
 #include "tpdialog.h"
+#include <cmath>
 
 class ImageTransformations : public QObject
 {
@@ -10,6 +11,7 @@ class ImageTransformations : public QObject
 
 private:
     Pixel* Bilinear(double x, double y, Image &image);
+    bool ScaleToSquare(Image &image, double x_scale, double y_scale);
 
 public slots:
     bool Menu_Transformation_ScaleByNearestNeighbor(Image &image);
