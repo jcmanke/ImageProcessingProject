@@ -4,6 +4,13 @@
 
 using namespace std;
 
+/**
+    Author: Joe Manke
+    Description: Converts an integer angle between 0 and 360 degrees into a double
+        between 0 and 2 Pi radians.
+    Params: angle - the angle in degrees
+    Returns: The angle in radians.
+  */
 double degreesToRadians(int angle)
 {
     return angle * M_PI / 180;
@@ -65,6 +72,14 @@ bool ImageTransformations::Menu_Transformation_RotationByBilinearIntensity(Image
     }
 }
 
+/**
+    Author: Joe Manke
+    Description: Rotates an image using inverse mapping and nearest neighbor interpolation.
+        Interpolation is achieved by simply rounding the results of the inverse mapping
+        equations to the nearest whole numbers.
+    Params: image - the image to rotate
+    Returns: true if the image is changed, false if user cancels the operation
+  */
 bool ImageTransformations::Menu_Transformation_RotationByNearestNeighbor(Image &image)
 {
     //get angle from user
@@ -160,6 +175,14 @@ bool ImageTransformations::Menu_Transformation_ScaleByBilinearIntensity(Image &i
     }
 }
 
+/**
+    Author: Joe Manke
+    Description: Scales an image using inverse mapping and nearest neighbor interpolation.
+        Interpolation is achieved by simply rounding the results of the inverse mapping
+        equations to the nearest whole numbers.
+    Params: image - the image to rotate
+    Returns: true if the image is changed, false if user cancels the operation
+  */
 bool ImageTransformations::Menu_Transformation_ScaleByNearestNeighbor(Image &image)
 {
     //get scale factors from user
