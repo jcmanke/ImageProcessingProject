@@ -55,8 +55,8 @@ bool ImageTransformations::Menu_Transformation_RotationByBilinearIntensity(Image
                 double diffX = x - centerX;
 
                 //inverse mapping
-                double origX = diffX * cosine - diffY * sine + centerX + 0.5;
-                double origY = diffY * cosine + diffX * sine + centerY + 0.5;
+                double origX = diffX * cosine - diffY * sine + centerX;
+                double origY = diffY * cosine + diffX * sine + centerY;
 
                 if (origY >= 0 && origY < image.Height()-1 && origX >= 0 && origX < image.Width()-1)
                 {
