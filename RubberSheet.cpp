@@ -100,18 +100,30 @@ bool ImageTransformations::Menu_Transformation_GeneralWarp(Image &image)
             }
         }
 
-        Image newImage = Image(image.Height(), image.Width());
+        uint xMin = fmin(fmin(pointE.x(), pointF.x()), fmin(pointG.x(), pointH.x()));
+        uint xMax = fmax(fmin(pointE.x(), pointF.x()), fmin(pointG.x(), pointH.x()));
+        uint yMin = fmin(fmin(pointE.y(), pointF.y()), fmin(pointG.y(), pointH.y()));
+        uint yMax = fmax(fmin(pointE.y(), pointF.y()), fmin(pointG.y(), pointH.y()));
+        Image newImage = Image(yMax - yMin, xMax - xMin);
 
-        for(uint y = 0; y < image.Height(); y++)
+        for(uint y = 0; y < newImage.Height(); y++)
         {
-            for(uint x = 0; x < image.Width(); x++)
+            for(uint x = 0; x < newImage.Width(); x++)
             {
-                uint newX = (A[0][0]*x + A[1][0]*y+A[2][0])/
+                uint u = (A[0][0]*x + A[1][0]*y+A[2][0])/
                             (A[0][2]*x + A[1][2]*y+A[2][2]);
-                uint newY = (A[0][1]*x + A[1][1]*y+A[2][1])/
+                uint v = (A[0][1]*x + A[1][1]*y+A[2][1])/
                             (A[0][2]*x + A[1][2]*y+A[2][2]);
-                Pixel *pix = Bilinear(newX, newY, image);
-                newImage[newX][newY].SetRGB(pix->Red(), pix->Green(), pix->Blue());
+                if(u > image.Width() || u < 0 ||
+                   v > image.Height() || v < 0 )
+                {
+                    newImage[x][y].SetRGB(0,0,0);
+                }
+                else
+                {
+                    Pixel *pix = Bilinear(u, v, image);
+                    newImage[x][y].SetRGB(pix->Red(), pix->Green(), pix->Blue());
+                }
             }
         }
 
