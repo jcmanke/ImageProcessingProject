@@ -1,3 +1,10 @@
+/**
+    Authors: Adam Meaney and Joe Manke
+    Description: These are all of the functions necessary to perform affine transformations.
+        It includes methods for doing scaling and rotation, through both bilinear and nearest
+        neighbor interpolation.
+  */
+
 #include "DIPProject.h"
 #include "point.h"
 #include <cmath>
