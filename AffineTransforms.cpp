@@ -4,24 +4,6 @@
 
 using namespace std;
 
-bool getScaledImage(Image &originalImage, Image &newImage)
-{
-    double x_scale = 1.0;
-    double y_scale = 1.0;
-
-    Dialog input = Dialog("Scaling").Add(x_scale, "X Scale Factor", 0.0, 10.0).Add(y_scale, "Y Scale Factor", 0.0, 10.0);
-
-    if (input.Show())
-    {
-        newImage = Image(originalImage.Height() * y_scale, originalImage.Width() * x_scale);
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
 double degreesToRadians(int angle)
 {
     return angle * M_PI / 180;
@@ -127,15 +109,18 @@ bool ImageTransformations::Menu_Transformation_ScaleByBilinearIntensity(Image &i
     double x_scale = 1.0;
     double y_scale = 1.0;
 
+    // Get scale factors
     Dialog input = Dialog("Scaling").Add(x_scale, "X Scale Factor", 0.0, 10.0).Add(y_scale, "Y Scale Factor", 0.0, 10.0);
 
     if (input.Show())
     {
+        // Construct scaled image.
         Image newImage = Image(image.Height() * y_scale, image.Width() * x_scale);
 
         int width = newImage.Width();
         int origWidth = image.Width();
 
+        // Leave off edges for safety
         for (uint y = 1; y < newImage.Height() - 1; y++)
         {
             double origY = y / y_scale;
@@ -203,11 +188,13 @@ Pixel* ImageTransformations::Bilinear(double newx, double newy, Image &image)
     uint x = (int) newx;
     uint y = (int) newy;
 
+    // Find the 4 nearest points to the mapped point
     Point point11 = Point(x, y, image[y][x]);
     Point point12 = Point(x, y+1, image[y+1][x]);
     Point point21 = Point(x+1, y, image[y][x+1]);
     Point point22 = Point(x+1, y+1, image[y+1][x+1]);
 
+    // Weighted average of the points.
     double scaleFactor1 = (point21.X() - newx) / (point21.X() - point11.X());
     double scaleFactor2 = (newx - point11.X()) / (point21.X() - point11.X());
 
@@ -222,6 +209,8 @@ Pixel* ImageTransformations::Bilinear(double newx, double newy, Image &image)
 
     Point row1 = Point(newx, y, *pix);
 
+
+    // Get the second midpoint to average
     scaleFactor1 = (point22.X() - newx) / (point22.X() - point12.X());
     scaleFactor2 = (newx - point12.X()) / (point22.X() - point12.X());
 
@@ -236,6 +225,7 @@ Pixel* ImageTransformations::Bilinear(double newx, double newy, Image &image)
 
     Point row2 = Point(newx, y + 1, *pix2);
 
+    // Average the 2 temporary pixels.
     scaleFactor1 = (row2.Y() - newy) / (row2.Y() - row1.Y());
     scaleFactor2 = (newy - row1.Y()) / (row2.Y() - row1.Y());
 
