@@ -9,6 +9,14 @@ double degreesToRadians(int angle)
     return angle * M_PI / 180;
 }
 
+/**
+    Author: Adam Meaney
+    Description: This function uses standard rotation formulas to rotate an image, using
+        bilinear interpolation to map pixels in inverse from the new image to old.
+        Bilinear interpolation is described in the function used to interpolate.
+    Params: image - the image to interpolate
+    Returns: true or false - should we update the image.
+  */
 bool ImageTransformations::Menu_Transformation_RotationByBilinearIntensity(Image &image)
 {
     //get angle from user
@@ -103,7 +111,14 @@ bool ImageTransformations::Menu_Transformation_RotationByNearestNeighbor(Image &
         return false;
     }
 }
-
+/**
+    Author: Adam Meaney
+    Description: This function scales an image, using
+        bilinear interpolation to map pixels in inverse from the new image to old.
+        Bilinear interpolation is described in the function used to interpolate.
+    Params: image - the image to interpolate
+    Returns: true or false - should we update the image.
+  */
 bool ImageTransformations::Menu_Transformation_ScaleByBilinearIntensity(Image &image)
 {
     double x_scale = 1.0;
@@ -183,6 +198,18 @@ bool ImageTransformations::Menu_Transformation_ScaleByNearestNeighbor(Image &ima
     }
 }
 
+/**
+    Author: Adam Meaney
+    Description: This function takes a point to interpolate, and an image to map from.
+        It then finds intermediate points in the x direction by doing a weighted
+        average of the pixels on each side. It then averages in the y direction.
+        Weight is given higher to closer pixels.
+    Params:
+        image - the image to interpolate
+        newx  - the x coordinate to decide where to map
+        newy  - the y coordinate to map
+    Returns: pixel - the interpolated pixel
+  */
 Pixel* ImageTransformations::Bilinear(double newx, double newy, Image &image)
 {
     uint x = (int) newx;
